@@ -19,7 +19,24 @@ class DbSettings(BaseSettings):
             raise ValueError("DBURL must start with 'postgresql://'")
         return value
 
-        
+
+class JWTSettings(BaseSettings):
+
+    JWT_SECRET_KEY : str
+    JWT_ALGORITHM : str
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES : int
+
+    model_config = SettingsConfigDict(  
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="allow"
+    )
+
+
 @lru_cache()
 def getDbSettings():
     return DbSettings()
+
+@lru_cache()
+def getJWTSettings():
+    return JWTSettings()

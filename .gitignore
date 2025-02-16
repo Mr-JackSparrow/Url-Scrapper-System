@@ -4,3 +4,5 @@
 .env
 .pytest_cache
 __pycache__
+services/auth-service/migrations/versions
+services/auth-service/migrations/script.py.mako
