@@ -1,7 +1,20 @@
 services:
+  auth-service:
+    build: ../
+    container_name: auth-service
+    ports:
+      - "8080:8080"
+    env_file:
+      - ../.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - auth_service_network
+
   postgres:
     image: postgres:15
-    container_name: postgres
+    container_name: postgres-for-auth-service
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}

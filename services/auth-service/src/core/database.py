@@ -6,3 +6,4 @@ settings = getDbSettings()
 
 engine = create_engine(settings.DBURL)
 SessionLocal = sessionmaker(autoflush = False, bind = engine)
+
