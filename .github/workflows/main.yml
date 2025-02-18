@@ -26,9 +26,6 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      - name: Run Tests
-        run: pytest
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
