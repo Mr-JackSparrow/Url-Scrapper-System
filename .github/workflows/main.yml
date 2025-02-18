@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  IMAGE_NAME: assignment
+  IMAGE_NAME: jacksparrow3133/assignment
 
 jobs:
   build:
