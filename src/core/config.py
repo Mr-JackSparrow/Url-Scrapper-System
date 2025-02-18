@@ -45,8 +45,8 @@ class redisDbSettings(BaseSettings):
     @field_validator("REDIS_DB_URL")
     @classmethod
     def urlValidator(cls, value : str) -> str:
-        if not value.startswith("redis://"):
-            raise ValueError("DBURL must start with 'redis://'")
+        if not value.startswith("rediss://"):
+            raise ValueError("DBURL must start with 'rediss://'")
         return value
 
 @lru_cache()

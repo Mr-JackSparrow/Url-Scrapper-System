@@ -8,13 +8,28 @@ from sqlalchemy.orm import Session
 from fastapi import Depends
 from src.core.config import getRedisDbSettings
 from src.dependencies import getDb
+from ssl import CERT_NONE
 
 settings = getRedisDbSettings()
 
 celeryApp = Celery(
     'scrapper-service',
     broker=settings.REDIS_DB_URL,
-    backend=settings.REDIS_DB_URL,
+    backend=settings.REDIS_DB_URL
+)
+
+celeryApp.conf.update(
+    broker_use_ssl={
+        'ssl_cert_reqs': CERT_NONE,  
+    },
+    redis_backend_use_ssl={
+        'ssl_cert_reqs': CERT_NONE,  
+    },
+    task_serializer='json',
+    accept_content=['json'],
+    result_serializer='json',
+    timezone='UTC',
+    enable_utc=True,
 )
 
 @celeryApp.task(name="scrapper-service.core.celerySetup.scrapMetaData", bind=True)
