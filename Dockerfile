@@ -28,6 +28,5 @@ USER appuser
 # Expose the port (Render assigns a PORT dynamically)
 EXPOSE 8000
 
-# Command to run the application (uses the dynamically assigned Render PORT)
 CMD ["sh", "-c", "uvicorn src.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
 
