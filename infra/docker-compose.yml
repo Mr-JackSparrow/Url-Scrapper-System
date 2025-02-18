@@ -1,20 +1,8 @@
 services:
-  auth-service:
-    build: ../
-    container_name: auth-service
-    ports:
-      - "8080:8080"
-    env_file:
-      - ../.env
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - auth_service_network
 
   postgres:
     image: postgres:15
-    container_name: postgres-for-auth-service
+    container_name: postgres
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -23,9 +11,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     networks:
-      - auth_service_network
+      - project_network
     healthcheck:  
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 20s
@@ -33,10 +21,20 @@ services:
       retries: 5
       start_period: 10s
 
+  redis:
+    image: redis:7.0
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+    networks:
+      - project_network
+
 volumes:
-  postgres_data: {}
-  
+  postgres: {}
+  redis:
 
 networks:
-  auth_service_network:
-    name: auth_service_network
+  project_network:
+    driver: bridge

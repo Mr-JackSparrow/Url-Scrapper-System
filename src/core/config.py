@@ -32,6 +32,26 @@ class JWTSettings(BaseSettings):
         extra="allow"
     )
 
+class redisDbSettings(BaseSettings):
+
+    REDIS_DB_URL : str
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="allow"
+    )
+    
+    @field_validator("REDIS_DB_URL")
+    @classmethod
+    def urlValidator(cls, value : str) -> str:
+        if not value.startswith("redis://"):
+            raise ValueError("DBURL must start with 'redis://'")
+        return value
+
+@lru_cache()
+def getRedisDbSettings():
+    return redisDbSettings()
 
 @lru_cache()
 def getDbSettings():
