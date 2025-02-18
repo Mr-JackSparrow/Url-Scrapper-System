@@ -10,6 +10,8 @@ on:
 
 env:
   IMAGE_NAME: jacksparrow3133/assignment
+  RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+  RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
 jobs:
   build:
@@ -37,3 +39,10 @@ jobs:
 
       - name: Push Docker Image to Docker Hub
         run: docker push $IMAGE_NAME:latest
+
+      - name: Deploy to Render
+        run: |
+          curl -X POST "https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys" \
+          -H "Authorization: Bearer $RENDER_API_KEY" \
+          -H "Content-Type: application/json" \
+          -d '{}'
