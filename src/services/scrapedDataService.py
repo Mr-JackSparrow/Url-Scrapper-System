@@ -15,11 +15,11 @@ class ScrapedDataService:
         self.scrapedDataRepository = ScrapedDataRepository(db)
     
 
-    def fetchAndSaveData(self, emailId):
+    def fetchAndSaveData(self, emailId, temp_token):
         try:
-            scrapedData = self.scrapedDataRepository.get_all_scraped_data(emailId)
+            scrapedData = self.scrapedDataRepository.get_all_scraped_data(emailId, temp_token)
             if not scrapedData:
-                raise HTTPException(status_code=404, detail="No data found for the given email ID")
+                raise HTTPException(status_code=404, detail="No data found for the given Task ID")
 
             file_dir = "files"  
             os.makedirs(file_dir, exist_ok=True)  

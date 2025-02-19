@@ -28,15 +28,23 @@ async def upload_csv(file : UploadFile = File(...), payload = Depends(validate_t
     try:
         csv_data = io.StringIO(content.decode("utf-8"))
         reader = csv.reader(csv_data)
-        urlList = [row[0] for row in reader if row]
-
+        urlList = []
+        for row in reader:
+            if len(row) != 1:
+                log.warning(f"Invalid CSV format in /upload-csv: More than one column found")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CSV file must contain only one column")
+            url = row[0].strip()
+            if not (url.startswith("http://") or url.startswith("https://")):
+                log.warning(f"Invalid URL format in /upload-csv: {url}")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid URL format: {url}")
+            urlList.append(url)
     except Exception as e:
         log.error(f"Error parsing CSV file: {str(e)}")
         return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid CSV format")
 
     task = celeryApp.send_task('scrapper-service.core.celerySetup.scrapMetaData', args=[urlList, emailId])
 
-    return {"urlList" : task.id}
+    return {"task_id": task.id}
 
 
 @scraperRouter.get("/check-status/{task_id}")
@@ -49,14 +57,14 @@ async def checkStatus(task_id : str, service: ScrapedDataService = Depends(Scrap
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND ,detail="Task not found")
     return {"status" : task.state}
 
-@scraperRouter.get("/download-scraped-data")
-async def download_scraped_data(service: ScrapedDataService = Depends(ScrapedDataService), payload = Depends(validate_token)):
+@scraperRouter.get("/download-scraped-data/{task_id}")
+async def download_scraped_data(task_id : str, service: ScrapedDataService = Depends(ScrapedDataService), payload = Depends(validate_token)):
 
     emailId = payload.get("email")
 
     file_path = None
     try:
-        file_path = service.fetchAndSaveData(emailId)
+        file_path = service.fetchAndSaveData(emailId, task_id)
 
         if not os.path.exists(file_path):
             log.error(f"File not found in /download'scraped-data")

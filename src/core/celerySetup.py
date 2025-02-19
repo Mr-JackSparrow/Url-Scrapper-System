@@ -17,6 +17,8 @@ import logging
 setup_logging()
 log = logging.getLogger(__name__)
 
+
+
 settings = getRedisDbSettings()
 
 celeryApp = Celery(
@@ -44,9 +46,9 @@ def scrapMetaData(self, urlList: list, emailId: str):
     import asyncio
 
     loop = asyncio.get_event_loop()
-    return loop.run_until_complete(_scrapMetaData(urlList, emailId))
+    return loop.run_until_complete(_scrapMetaData(urlList, emailId, self.request.id))
 
-async def _scrapMetaData(urlList: list, emailId: str):
+async def _scrapMetaData(urlList: list, emailId: str, temp_token : str):
     results = []
     db = next(getDb())
     repo = ScrapedDataRepository(db)
@@ -72,6 +74,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
 
             data = {
                 "user_id": userId,
+                "temp_token": temp_token,
                 "url": url,
                 "title": title,
                 "description": description,
@@ -85,9 +88,11 @@ async def _scrapMetaData(urlList: list, emailId: str):
             results.append({
                 "user_id": userId,
                 "email_id": emailId,
+                'temp_token': temp_token,
                 'url': url,
                 'title': title,
                 'description': description,
+                
                 'keywords': keywords,
                 'status': 'success',
             })
@@ -101,6 +106,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
             log.warning(error_message)
             error_data = ScrapedData.from_dict({
                 "user_id": userId,
+                "temp_token": temp_token,
                 "url": url,
                 "status": "error",
                 "error_message": error_message,
@@ -109,6 +115,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
 
             results.append({
                 "user_id": userId,
+                'temp_token': temp_token,
                 'url': url,
                 'title': None,
                 'description': None,
@@ -122,6 +129,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
             log.warning(error_message)
             error_data = ScrapedData.from_dict({
                 "user_id": userId,
+                "temp_token": temp_token,
                 "url": url,
                 "status": "error",
                 "error_message": error_message,
@@ -130,6 +138,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
 
             results.append({
                 "user_id": userId,
+                'temp_token': temp_token,
                 'url': url,
                 'title': None,
                 'description': None,
@@ -143,6 +152,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
             log.warning(error_message)
             error_data = ScrapedData.from_dict({
                 "user_id": userId,
+                "temp_token": temp_token,
                 "url": url,
                 "status": "error",
                 "error_message": error_message,
@@ -152,6 +162,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
             results.append({
                 "user_id": userId,
                 'url': url,
+                'temp_token': temp_token,
                 'title': None,
                 'description': None,
                 'keywords': None,
@@ -164,6 +175,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
             log.warning(error_message)
             error_data = ScrapedData.from_dict({
                 "user_id": userId,
+                "temp_token": temp_token,
                 "url": url,
                 "status": "error",
                 "error_message": error_message,
@@ -172,6 +184,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
 
             results.append({
                 "user_id": userId,
+                'temp_token': temp_token,
                 'url': url,
                 'title': None,
                 'description': None,
@@ -185,6 +198,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
             log.warning(error_message)
             error_data = ScrapedData.from_dict({
                 "user_id": userId,
+                "temp_token": temp_token,
                 "url": url,
                 "status": "error",
                 "error_message": error_message,
@@ -193,6 +207,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
 
             results.append({
                 "user_id": userId,
+                'temp_token': temp_token,
                 'url': url,
                 'title': None,
                 'description': None,
@@ -206,6 +221,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
             log.error(error_message)
             error_data = ScrapedData.from_dict({
                 "user_id": userId,
+                "temp_token": temp_token,
                 "url": url,
                 "status": "error",
                 "error_message": error_message,
@@ -214,6 +230,7 @@ async def _scrapMetaData(urlList: list, emailId: str):
 
             results.append({
                 "user_id": userId,
+                'temp_token': temp_token,
                 'url': url,
                 'title': None,
                 'description': None,

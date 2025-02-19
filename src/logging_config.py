@@ -32,3 +32,4 @@ LOG_CONFIG = {
 
 def setup_logging():
     logging.config.dictConfig(LOG_CONFIG)
+

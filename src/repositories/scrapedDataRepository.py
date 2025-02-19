@@ -41,13 +41,13 @@ class ScrapedDataRepository:
             log.error(f"Error creating batch scraped data records. Error: {e}")
             raise e
     
-    def get_all_scraped_data(self, emailId):
+    def get_all_scraped_data(self, emailId, temp_token):
         try:
-            
             scrapedData = (
                 self.db.query(ScrapedData)
                 .join(User, User.id == ScrapedData.user_id)
                 .filter(User.email == emailId)
+                .filter(ScrapedData.temp_token == temp_token)
                 .all()
                 )
 
