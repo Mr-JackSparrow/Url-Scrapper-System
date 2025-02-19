@@ -4,4 +4,3 @@
 .env
 .pytest_cache
 __pycache__
-src/api/dev-routes/
