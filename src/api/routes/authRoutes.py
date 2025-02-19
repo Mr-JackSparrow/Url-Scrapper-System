@@ -15,7 +15,15 @@ authRouter = APIRouter()
 async def register(user : UserSchema, service : UserService = Depends(UserService)):
     try:
         usern = service.createUser(user)
-        return {"message": f"User created with user = {usern}"}
+        access_token = create_access_token(data={"email": user.email})
+
+        result = {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "message": f"User created with user = {usern}"
+        }
+    
+        return {"result": result}
     except ValueError as e:
         log.error(f"ValueError in /register : {e}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
