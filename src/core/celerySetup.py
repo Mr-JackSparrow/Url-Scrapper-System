@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from requests.exceptions import RequestException
 from src.repositories.scrapedDataRepository import ScrapedDataRepository
+from src.repositories.userRepository import UserRepository
 from src.models.scrapedDataModel import ScrapedData
 from sqlalchemy.orm import Session
 from fastapi import Depends
@@ -33,16 +34,23 @@ celeryApp.conf.update(
 )
 
 @celeryApp.task(name="scrapper-service.core.celerySetup.scrapMetaData", bind=True)
-def scrapMetaData(self, urlList: list):
+def scrapMetaData(self, urlList: list, emailId : str):
     import asyncio
 
     loop = asyncio.get_event_loop()
-    return loop.run_until_complete(_scrapMetaData(urlList))
+    return loop.run_until_complete(_scrapMetaData(urlList, emailId))
 
-async def _scrapMetaData(urlList: list):
+async def _scrapMetaData(urlList: list, emaiId : str):
     results = []
     db = next(getDb())
     repo = ScrapedDataRepository(db)
+    userRepo = UserRepository(db)
+
+    print(f">>>>>>>>>>>>>>>>>>>>>>>>>this is email {emaiId}>>>>>>>>>>>>>>>>>>>>>")
+    userId = userRepo.getUserIdByEmailId(emaiId)
+
+    batch_data = []  
+    batch_size = 50 
 
     for url in urlList:
         try:
@@ -58,33 +66,42 @@ async def _scrapMetaData(urlList: list):
             keywords = keywords['content'].strip() if keywords else None
 
             data = {
+                "user_id":userId,
                 "url": url,
                 "title": title,
                 "description": description,
                 "keywords": keywords,
-                "status": "success", 
+                "status": "success",
             }
 
             scraped_data = ScrapedData.from_dict(data)
-            repo.create_scraped_data(scraped_data)
+            batch_data.append(scraped_data)
 
             results.append({
+                "user_id":userId,
+                "email_id":emaiId,
                 'url': url,
                 'title': title,
                 'description': description,
                 'keywords': keywords,
                 'status': 'success',
             })
+
+            if len(batch_data) >= batch_size:
+                repo.create_scraped_data_batch(batch_data)
+                batch_data = []
+
         except RequestException as e:
-
             error_data = ScrapedData.from_dict({
+                "user_id":userId,
                 "url": url,
                 "status": "error",
                 "error_message": str(e),
             })
-            repo.create_scraped_data(error_data)
+            batch_data.append(error_data)
 
             results.append({
+                "user_id":userId,
                 'url': url,
                 'title': None,
                 'description': None,
@@ -92,16 +109,22 @@ async def _scrapMetaData(urlList: list):
                 'status': 'error',
                 'error_message': str(e),
             })
+
+            if len(batch_data) >= batch_size:
+                repo.create_scraped_data_batch(batch_data)
+                batch_data = []
+
         except Exception as e:
-        
             error_data = ScrapedData.from_dict({
+                "user_id":userId,
                 "url": url,
                 "status": "error",
                 "error_message": str(e),
             })
-            repo.create_scraped_data(error_data)
+            batch_data.append(error_data)
 
             results.append({
+                "user_id":userId,
                 'url': url,
                 'title': None,
                 'description': None,
@@ -109,4 +132,12 @@ async def _scrapMetaData(urlList: list):
                 'status': 'error',
                 'error_message': str(e),
             })
+
+            if len(batch_data) >= batch_size:
+                repo.create_scraped_data_batch(batch_data)
+                batch_data = []
+
+    if batch_data:
+        repo.create_scraped_data_batch(batch_data)
+
     return results

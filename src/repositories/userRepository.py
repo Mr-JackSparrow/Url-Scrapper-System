@@ -33,3 +33,10 @@ class UserRepository:
             return result.scalars().first()
         except Exception as e:
             raise e
+        
+    def getUserIdByEmailId(self, email : str):
+        try:
+            result = self.db.execute(select(User.id).where(User.email == email))
+            return result.scalars().first()
+        except Exception as e:
+            raise e

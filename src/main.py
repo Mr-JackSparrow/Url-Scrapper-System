@@ -1,9 +1,11 @@
 from fastapi import FastAPI
-from src.api.routes.routes import router as auth_router
+from src.api.routes.scraperRoutes import scraperRouter
+from src.api.routes.authRoutes import authRouter
 
 app = FastAPI()
 
-app.include_router(auth_router, tags=["auth"])
+app.include_router(authRouter, tags = ["auth"])
+app.include_router(scraperRouter, tags = ["scraper"])
 
 @app.get("/")
 def read_root():

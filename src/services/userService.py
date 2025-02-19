@@ -26,6 +26,14 @@ class UserService:
         except Exception as e:
             raise e
         
+    def getUserId(self, emailId : str):
+
+        try:
+            userId = self.userRepository.getUserIdByEmailId(emailId)
+            return userId
+        except Exception as e:
+            return "UknownUser"
+    
     def authenticate(self, user : UserLoginSchema) -> True:
         
         try:

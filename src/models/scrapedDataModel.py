@@ -1,10 +1,11 @@
-from sqlalchemy import Column, UUID, String, text
+from sqlalchemy import Column, UUID, String, ForeignKey, text
 from src.models.base import Base
 
 class ScrapedData(Base):
     __tablename__ = "scraped_data"
 
     id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     url = Column(String(512), nullable=False)
     title = Column(String(512), nullable=True)
     description = Column(String(1024), nullable=True)
