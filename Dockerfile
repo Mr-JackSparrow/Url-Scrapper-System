@@ -14,16 +14,15 @@ COPY requirements.txt ./
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
+# Copy the rest of the application (including start.sh at the root level)
 COPY . .
 
-# Ensure the scripts directory exists and set permissions
-RUN mkdir -p /app/scripts && \
-    chmod +x /app/scripts/start.sh && \
-    ls -l /app/scripts
+# Make start.sh executable and verify
+RUN chmod +x /app/start.sh && \
+    ls -l /app
 
 # Expose the application port
 EXPOSE $PORT
 
-# Run the application using a process manager
-CMD ["/bin/sh", "/app/scripts/start.sh"]
+# Run the application using start.sh
+CMD ["/bin/sh", "/app/start.sh"]
