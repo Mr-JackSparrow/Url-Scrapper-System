@@ -1,6 +1,9 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
+# Install Bash
+RUN apt-get update && apt-get install -y --no-install-recommends bash && rm -rf /var/lib/apt/lists/*
+
 # Set environment variables
 ENV PORT=8000
 ENV PYTHONPATH=/app
@@ -24,5 +27,5 @@ RUN chmod +x /app/start.sh && \
 # Expose the application port
 EXPOSE $PORT
 
-# Run the application using start.sh
-CMD ["/bin/sh", "/app/start.sh"]
+# Run the application using start.sh with Bash
+CMD ["/bin/bash", "/app/start.sh"]
