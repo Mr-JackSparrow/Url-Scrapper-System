@@ -1,0 +1,82 @@
+2025-02-19 21:14:17,775 - celery.utils.functional - DEBUG - functional.py:335 - 
+def chord(self, header, body, partial_args=0, interval=1, countdown=2, max_retries=3, eager=4, **kwargs):
+    return 1
+
+2025-02-19 21:14:17,775 - celery.utils.functional - DEBUG - functional.py:335 - 
+def chunks(task, it, n):
+    return 1
+
+2025-02-19 21:14:17,776 - celery.utils.functional - DEBUG - functional.py:335 - 
+def unlock_chord(self, group_id, callback, interval=0, max_retries=1, result=2, Result=3, GroupResult=4, result_from_tuple=5, **kwargs):
+    return 1
+
+2025-02-19 21:14:17,776 - celery.utils.functional - DEBUG - functional.py:335 - 
+def group(self, tasks, result, group_id, partial_args, add_to_parent=0):
+    return 1
+
+2025-02-19 21:14:17,776 - celery.utils.functional - DEBUG - functional.py:335 - 
+def scrapMetaData(self, urlList, emailId):
+    return 1
+
+2025-02-19 21:14:17,777 - celery.utils.functional - DEBUG - functional.py:335 - 
+def xmap(task, it):
+    return 1
+
+2025-02-19 21:14:17,777 - celery.utils.functional - DEBUG - functional.py:335 - 
+def backend_cleanup():
+    return 1
+
+2025-02-19 21:14:17,778 - celery.utils.functional - DEBUG - functional.py:335 - 
+def chain(*args, **kwargs):
+    return 1
+
+2025-02-19 21:14:17,778 - celery.utils.functional - DEBUG - functional.py:335 - 
+def xstarmap(task, it):
+    return 1
+
+2025-02-19 21:14:17,779 - celery.utils.functional - DEBUG - functional.py:335 - 
+def accumulate(self, *args, **kwargs):
+    return 1
+
+2025-02-19 21:14:44,032 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2025-02-19 21:14:44,033 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2025-02-19 21:14:44,033 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2025-02-19 21:14:44,090 - passlib.registry - DEBUG - registry.py:296 - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2025-02-19 21:16:12,983 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "Y:\fastApi\Assignment\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-02-19 21:16:12,987 - passlib.handlers.bcrypt - DEBUG - bcrypt.py:625 - detected 'bcrypt' backend, version '<unknown>'
+2025-02-19 21:16:12,987 - passlib.handlers.bcrypt - DEBUG - bcrypt.py:406 - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-02-19 21:16:55,607 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_begin with no data
+2025-02-19 21:16:55,607 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[42:61]
+2025-02-19 21:16:55,608 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[63:106]
+2025-02-19 21:16:55,608 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-19 21:16:55,609 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[108:120]
+2025-02-19 21:16:55,610 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[122:130]
+2025-02-19 21:16:55,610 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-19 21:16:55,611 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_headers_finished with no data
+2025-02-19 21:16:55,613 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_part_data with data[134:885]
+2025-02-19 21:16:55,613 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_end with no data
+2025-02-19 21:16:55,614 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_end with no data
+2025-02-19 21:17:16,130 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_begin with no data
+2025-02-19 21:17:16,131 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[42:61]
+2025-02-19 21:17:16,131 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[63:106]
+2025-02-19 21:17:16,131 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-19 21:17:16,131 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[108:120]
+2025-02-19 21:17:16,131 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[122:130]
+2025-02-19 21:17:16,132 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-19 21:17:16,133 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_headers_finished with no data
+2025-02-19 21:17:16,133 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_part_data with data[134:885]
+2025-02-19 21:17:16,133 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_end with no data
+2025-02-19 21:17:16,133 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_end with no data
+2025-02-19 21:17:16,214 - celery.backends.redis - WARNING - redis.py:294 - 
+Setting ssl_cert_reqs=CERT_NONE when connecting to redis means that celery will not validate the identity of the redis broker when connecting. This leaves you vulnerable to man in the middle attacks.
+
+2025-02-19 21:18:22,130 - src.repositories.scrapedDataRepository - INFO - scrapedDataRepository.py:54 - Successfully fetched 91 scraped data records for email: yash@gmail.com
+2025-02-19 22:06:30,590 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2025-02-19 22:06:30,591 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2025-02-19 22:06:30,591 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2025-02-19 22:06:30,662 - passlib.registry - DEBUG - registry.py:296 - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>

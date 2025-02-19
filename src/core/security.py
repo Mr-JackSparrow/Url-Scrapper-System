@@ -26,12 +26,10 @@ def create_access_token(data: dict) -> str:
     return jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
 def validate_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """
-    Validate the JWT token and return the decoded payload.
-    """
-    token = credentials.credentials  # Extract the token from the Authorization header
+    
+    token = credentials.credentials
     try:
-        # Decode and validate the token
+        
         payload = jwt.decode(
             token,
             settings.JWT_SECRET_KEY,
