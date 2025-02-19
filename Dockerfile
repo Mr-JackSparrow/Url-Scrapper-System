@@ -5,7 +5,9 @@ FROM python:3.11-slim
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     POETRY_VIRTUALENVS_CREATE=false \
-    C_FORCE_ROOT=1  # Allow Celery to run as root
+    C_FORCE_ROOT=1  
+    
+# Allow Celery to run as root
 
 # Set working directory inside the container
 WORKDIR /app
