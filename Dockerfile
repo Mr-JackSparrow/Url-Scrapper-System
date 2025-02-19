@@ -1,6 +1,10 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
+# Set environment variables
+ENV PORT=8000
+ENV PYTHONPATH=/app
+
 # Set the working directory in the container
 WORKDIR /app
 
@@ -13,15 +17,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY . .
 
-# Ensure scripts are executable
-RUN chmod +x /app/scripts/start.sh
+# Ensure the scripts directory exists and set permissions
+RUN mkdir -p /app/scripts && \
+    chmod +x /app/scripts/start.sh && \
+    ls -l /app/scripts
 
-# Expose the application port (match this with your service configuration)
-ENV PORT=8000
-EXPOSE 8000
-
-# Set PYTHONPATH to ensure module imports work
-ENV PYTHONPATH=/app
+# Expose the application port
+EXPOSE $PORT
 
 # Run the application using a process manager
 CMD ["/bin/sh", "/app/scripts/start.sh"]
