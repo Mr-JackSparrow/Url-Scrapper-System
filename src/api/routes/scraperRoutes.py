@@ -79,3 +79,11 @@ async def download_scraped_data(task_id: str, service: ScrapedDataService = Depe
             os.remove(file_path)
         log.error(f"Unexpected Error in /download-scraped-data: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    
+
+
+
+
+
+
+    

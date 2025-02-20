@@ -1,9 +1,11 @@
 from src.logging_config import setup_logging
 import logging
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from src.schemas.userRegisterSchema import UserSchema
 from src.schemas.userLoginSchema import UserLoginSchema
 from src.services.userService import UserService
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from src.core.security import create_access_token, validate_token
 
 setup_logging()
@@ -30,29 +32,50 @@ async def register(user : UserSchema, service : UserService = Depends(UserServic
     except Exception as e:
         log.error(f"Unexpected error in /register: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred")
+    
+security = HTTPBearer(auto_error=False)
 
 @authRouter.post("/login")
-async def login(request : Request, user: UserLoginSchema, service : UserService = Depends(UserService)):
+async def login(
+    request: Request,
+    user: UserLoginSchema,
+    service: UserService = Depends(UserService),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+):
     try:
+        token = credentials.credentials if isinstance(credentials, HTTPAuthorizationCredentials) else None
+        log.warning(f"Received token: {type(token)}")
 
-        token = request.headers.get("Authorization")
+        log.warning(f"before payload")
+        
+        if token == None:
+            pass
+        else:
+            payload = validate_token(credentials)
+            log.warning(f"User {payload['email']} already logged in")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"User {payload['email']} already logged in",
+            )
 
-        if token:
-            try:
-                validate_token(token.split("Bearer ")[-1])
-                return {"message": "Already logged in"}
-            except Exception:
-                log.error(f"Token Error in /login : {e}")
-                pass
-
-        authenticatedUser : dict = service.authenticate(user)
-
+        authenticatedUser: dict = service.authenticate(user)
         if not authenticatedUser:
-            log.warning(f"Authentication failed for user : {user.email}")
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+            log.warning(f"Authentication failed for user: {user.email}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect email or password",
+            )
         
         access_token = create_access_token(data={"email": authenticatedUser["email"]})
         return {"access_token": access_token, "token_type": "bearer"}
+
+    except HTTPException as hte:
+        log.error(f"HTTP Exception: {hte.detail}")
+        raise hte
+
     except Exception as e:
-        log.error(f"Unexpected Error in /login : {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred")
+        log.error(f"Unexpected Error in /login: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred",
+        )
