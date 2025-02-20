@@ -1,17 +1,19 @@
 import logging
-import httpx
+import asyncio
+import aiohttp
+from celery import Celery
 from bs4 import BeautifulSoup
-from requests.exceptions import RequestException, Timeout, TooManyRedirects, SSLError, ConnectionError
 from sqlalchemy.orm import Session
-from celery import Celery, group
+from fastapi import Depends
 from ssl import CERT_NONE
-
+from sqlalchemy.exc import SQLAlchemyError
 from src.logging_config import setup_logging
 from src.repositories.scrapedDataRepository import ScrapedDataRepository
 from src.repositories.userRepository import UserRepository
 from src.models.scrapedDataModel import ScrapedData
 from src.core.config import getRedisDbSettings
 from src.dependencies import getDb
+from requests.exceptions import TooManyRedirects, SSLError, ConnectionError
 
 setup_logging()
 log = logging.getLogger(__name__)
@@ -32,111 +34,96 @@ celeryApp.conf.update(
     result_serializer='json',
     timezone='UTC',
     enable_utc=True,
+    task_acks_late=True,  
+    broker_connection_retry_on_startup=True, 
+    worker_concurrency=5
 )
 
-# Constants
-REQUEST_TIMEOUT = 2  # Timeout for HTTP requests in seconds
-MAX_WORKERS = 200  # Number of concurrent workers for scraping
-BATCH_SIZE = 50  # Number of records to insert in a single batch
 
-@celeryApp.task(name="scrapper-service.core.celerySetup.scrapMetaData", bind=True)
+@celeryApp.task(name="scrapper-service.core.celerySetup.scrapMetaData", bind=True, max_retries=3, default_retry_delay=5)
 def scrapMetaData(self, urlList: list, emailId: str):
-    """
-    Scrapes metadata from a list of URLs concurrently and saves the results to the database in bulk.
-    
-    Args:
-        urlList (list): List of URLs to scrape.
-        emailId (str): Email ID of the user initiating the scrape.
-    
-    Returns:
-        list: List of scraped data or error messages.
-    """
-    log.info(f"Starting scrapMetaData task for emailId: {emailId} with {len(urlList)} URLs")
+    return asyncio.run(_scrapMetaData(urlList, emailId, self.request.id))
+
+async def _scrapMetaData(urlList: list, emailId: str, temp_token: str):
+    results = []
     db = next(getDb())
     repo = ScrapedDataRepository(db)
     userRepo = UserRepository(db)
 
-    # Get user ID from email
     userId = userRepo.getUserIdByEmailId(emailId)
-    if not userId:
-        raise ValueError(f"User with email {emailId} not found")
+    batch_data = []
 
-    # Create a group of tasks for concurrent execution
-    job = group(scrape_url.s(url, userId, self.request.id) for url in urlList)
-    result = job.apply_async()
+    async with aiohttp.ClientSession() as session:
+        tasks = [_fetch_metadata(session, url, userId, temp_token) for url in urlList]
+        scraped_results = await asyncio.gather(*tasks)
 
-    # Wait for the group to complete and collect results
-    results = result.get(disable_sync_subtasks=False)
+        for data in scraped_results:
+            if data:
+                batch_data.append(ScrapedData.from_dict(data))
+                results.append(data)
 
-    # Save all results to the database in bulk
-    if results:
-        for i in range(0, len(results), BATCH_SIZE):
-            batch_data = [ScrapedData.from_dict(data) for data in results[i:i + BATCH_SIZE]]
+    if batch_data:
+        try:
             repo.create_scraped_data_batch(batch_data)
+            db.commit()
+        except SQLAlchemyError as e:
+            log.error(f"Database Error: {str(e)}")
+            db.rollback()
+        finally:
+            db.close()
 
-    log.info(f"Completed scrapMetaData task for emailId: {emailId}")
     return results
 
-@celeryApp.task(name="scrapper-service.core.celerySetup.scrape_url", bind=True)
-async def scrape_url(self, url: str, userId: int, temp_token: str):
-    """
-    Scrapes metadata from a single URL.
-    
-    Args:
-        url (str): URL to scrape.
-        userId (int): ID of the user initiating the scrape.
-        temp_token (str): Temporary token for tracking the scrape job.
-    
-    Returns:
-        dict: Scraped data or error details.
-    """
+async def _fetch_metadata(session, url, userId, temp_token):
     try:
-        log.info(f"Scraping URL: {url}")
-        async with httpx.AsyncClient(timeout=REQUEST_TIMEOUT) as client:
-            response = await client.get(url)
-            response.raise_for_status()  # Raise an exception for HTTP errors
+        async with session.get(url, timeout=5) as response:
+            html = await response.text()
+            soup = BeautifulSoup(html, 'html.parser')
 
-        # Parse the HTML content
-        soup = BeautifulSoup(response.text, 'html.parser')
-        title = soup.find('title').text.strip() if soup.find('title') else None
-        description = soup.find('meta', attrs={'name': 'description'})
-        description = description['content'].strip() if description else None
-        keywords = soup.find('meta', attrs={'name': 'keywords'})
-        keywords = keywords['content'].strip() if keywords else None
+            title = soup.find('title').text.strip() if soup.find('title') else None
+            description = soup.find('meta', attrs={'name': 'description'})
+            description = description['content'].strip() if description else None
+            keywords = soup.find('meta', attrs={'name': 'keywords'})
+            keywords = keywords['content'].strip() if keywords else None
 
-        # Prepare scraped data
-        data = {
-            "user_id": userId,
-            "temp_token": temp_token,
-            "url": url,
-            "title": title,
-            "description": description,
-            "keywords": keywords,
-            "status": "success",
-        }
+            return {
+                "user_id": userId,
+                "temp_token": temp_token,
+                "url": url,
+                "title": title,
+                "description": description,
+                "keywords": keywords,
+                "status": "success",
+            }
 
-        return data
+    except asyncio.TimeoutError:
+        log.warning(f"Timeout: {url}")
+        return _error_response(userId, temp_token, url, "Timeout occurred")
 
-    except (Timeout, TooManyRedirects, SSLError, ConnectionError, RequestException) as e:
-        # Handle known HTTP/network errors
-        error_message = f"{type(e).__name__} occurred while scraping URL: {url}. Error: {str(e)}"
-        log.warning(error_message)
-        return {
-            "user_id": userId,
-            "temp_token": temp_token,
-            "url": url,
-            "status": "error",
-            "error_message": error_message,
-        }
+    except TooManyRedirects:
+        log.warning(f"Too many redirects: {url}")
+        return _error_response(userId, temp_token, url, "Too many redirects")
+
+    except SSLError:
+        log.warning(f"SSL error: {url}")
+        return _error_response(userId, temp_token, url, "SSL Error")
+
+    except ConnectionError:
+        log.warning(f"Connection error: {url}")
+        return _error_response(userId, temp_token, url, "Connection Error")
 
     except Exception as e:
-        # Handle unexpected errors
-        error_message = f"Unexpected error occurred for URL: {url}. Error: {str(e)}"
-        log.error(error_message)
-        return {
-            "user_id": userId,
-            "temp_token": temp_token,
-            "url": url,
-            "status": "error",
-            "error_message": error_message,
-        }
+        log.error(f"Unexpected error for {url}: {str(e)}")
+        return _error_response(userId, temp_token, url, f"Unexpected error: {str(e)}")
+
+def _error_response(userId, temp_token, url, error_message):
+    return {
+        "user_id": userId,
+        "temp_token": temp_token,
+        "url": url,
+        "title": None,
+        "description": None,
+        "keywords": None,
+        "status": "error",
+        "error_message": error_message,
+    }
