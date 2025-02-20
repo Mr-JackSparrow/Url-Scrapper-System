@@ -1,0 +1,134 @@
+2025-02-20 10:17:01,217 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2025-02-20 10:17:01,217 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2025-02-20 10:17:01,217 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2025-02-20 10:17:01,271 - passlib.registry - DEBUG - registry.py:296 - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2025-02-20 10:17:35,836 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_begin with no data
+2025-02-20 10:17:35,836 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[42:61]
+2025-02-20 10:17:35,837 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[63:106]
+2025-02-20 10:17:35,837 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:17:35,837 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[108:120]
+2025-02-20 10:17:35,837 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[122:130]
+2025-02-20 10:17:35,839 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:17:35,839 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_headers_finished with no data
+2025-02-20 10:17:35,839 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_part_data with data[134:885]
+2025-02-20 10:17:35,840 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_end with no data
+2025-02-20 10:17:35,840 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_end with no data
+2025-02-20 10:17:35,841 - src.api.routes.scraperRoutes - WARNING - scraperRoutes.py:38 - Invalid URL format in /upload-csv: URL
+2025-02-20 10:17:35,842 - src.api.routes.scraperRoutes - ERROR - scraperRoutes.py:42 - Error parsing CSV file: 400: Invalid URL format: URL
+2025-02-20 10:18:15,303 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_begin with no data
+2025-02-20 10:18:15,304 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[42:61]
+2025-02-20 10:18:15,304 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[63:106]
+2025-02-20 10:18:15,304 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:18:15,304 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[108:120]
+2025-02-20 10:18:15,304 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[122:130]
+2025-02-20 10:18:15,304 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:18:15,304 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_headers_finished with no data
+2025-02-20 10:18:15,306 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_part_data with data[134:885]
+2025-02-20 10:18:15,306 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_end with no data
+2025-02-20 10:18:15,307 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_end with no data
+2025-02-20 10:18:16,465 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2025-02-20 10:18:16,465 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2025-02-20 10:18:16,465 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2025-02-20 10:18:16,504 - passlib.registry - DEBUG - registry.py:296 - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2025-02-20 10:18:40,781 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "Y:\fastApi\Assignment\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-02-20 10:18:40,782 - passlib.handlers.bcrypt - DEBUG - bcrypt.py:625 - detected 'bcrypt' backend, version '<unknown>'
+2025-02-20 10:18:40,782 - passlib.handlers.bcrypt - DEBUG - bcrypt.py:406 - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-02-20 10:19:02,407 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_begin with no data
+2025-02-20 10:19:02,407 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[42:61]
+2025-02-20 10:19:02,408 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[63:106]
+2025-02-20 10:19:02,408 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:19:02,408 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[108:120]
+2025-02-20 10:19:02,408 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[122:130]
+2025-02-20 10:19:02,408 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:19:02,408 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_headers_finished with no data
+2025-02-20 10:19:02,408 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_part_data with data[134:885]
+2025-02-20 10:19:02,408 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_end with no data
+2025-02-20 10:19:02,409 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_end with no data
+2025-02-20 10:19:02,410 - src.api.routes.scraperRoutes - WARNING - scraperRoutes.py:38 - Invalid URL format in /upload-csv: URL
+2025-02-20 10:19:02,410 - src.api.routes.scraperRoutes - ERROR - scraperRoutes.py:42 - Error parsing CSV file: 400: Invalid URL format: URL
+2025-02-20 10:24:27,300 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2025-02-20 10:24:27,300 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2025-02-20 10:24:27,300 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2025-02-20 10:24:27,345 - passlib.registry - DEBUG - registry.py:296 - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>
+2025-02-20 10:30:08,023 - passlib.handlers.bcrypt - WARNING - bcrypt.py:622 - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "Y:\fastApi\Assignment\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-02-20 10:30:08,025 - passlib.handlers.bcrypt - DEBUG - bcrypt.py:625 - detected 'bcrypt' backend, version '<unknown>'
+2025-02-20 10:30:08,025 - passlib.handlers.bcrypt - DEBUG - bcrypt.py:406 - 'bcrypt' backend lacks $2$ support, enabling workaround
+2025-02-20 10:30:32,297 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_begin with no data
+2025-02-20 10:30:32,297 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[42:61]
+2025-02-20 10:30:32,297 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[63:106]
+2025-02-20 10:30:32,297 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:30:32,298 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[108:120]
+2025-02-20 10:30:32,298 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[122:130]
+2025-02-20 10:30:32,298 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:30:32,298 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_headers_finished with no data
+2025-02-20 10:30:32,298 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_part_data with data[134:885]
+2025-02-20 10:30:32,298 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_end with no data
+2025-02-20 10:30:32,299 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_end with no data
+2025-02-20 10:30:32,300 - src.api.routes.scraperRoutes - WARNING - scraperRoutes.py:37 - Invalid URL format in /upload-csv: URL
+2025-02-20 10:30:32,300 - src.api.routes.scraperRoutes - ERROR - scraperRoutes.py:42 - Error parsing CSV file: 400: Invalid URL format: URL
+2025-02-20 10:30:38,254 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_begin with no data
+2025-02-20 10:30:38,254 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[42:61]
+2025-02-20 10:30:38,255 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[63:106]
+2025-02-20 10:30:38,256 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:30:38,256 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[108:120]
+2025-02-20 10:30:38,256 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[122:130]
+2025-02-20 10:30:38,258 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:30:38,258 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_headers_finished with no data
+2025-02-20 10:30:38,259 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_part_data with data[134:885]
+2025-02-20 10:30:38,259 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_end with no data
+2025-02-20 10:30:38,260 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_end with no data
+2025-02-20 10:30:38,261 - src.api.routes.scraperRoutes - WARNING - scraperRoutes.py:37 - Invalid URL format in /upload-csv: URL
+2025-02-20 10:30:38,262 - src.api.routes.scraperRoutes - ERROR - scraperRoutes.py:42 - Error parsing CSV file: 400: Invalid URL format: URL
+2025-02-20 10:41:41,561 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_begin with no data
+2025-02-20 10:41:41,562 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[42:61]
+2025-02-20 10:41:41,562 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[63:106]
+2025-02-20 10:41:41,562 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:41:41,562 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[108:120]
+2025-02-20 10:41:41,562 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[122:130]
+2025-02-20 10:41:41,563 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:41:41,563 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_headers_finished with no data
+2025-02-20 10:41:41,563 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_part_data with data[134:885]
+2025-02-20 10:41:41,563 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_end with no data
+2025-02-20 10:41:41,563 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_end with no data
+2025-02-20 10:41:41,564 - src.api.routes.scraperRoutes - WARNING - scraperRoutes.py:37 - Invalid URL format in /upload-csv: URL
+2025-02-20 10:41:41,564 - src.api.routes.scraperRoutes - ERROR - scraperRoutes.py:42 - Error parsing CSV file: 400: Invalid URL format: URL
+2025-02-20 10:41:47,278 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_begin with no data
+2025-02-20 10:41:47,280 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[42:61]
+2025-02-20 10:41:47,280 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[63:106]
+2025-02-20 10:41:47,281 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:41:47,281 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[108:120]
+2025-02-20 10:41:47,281 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[122:130]
+2025-02-20 10:41:47,282 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:41:47,282 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_headers_finished with no data
+2025-02-20 10:41:47,282 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_part_data with data[134:885]
+2025-02-20 10:41:47,282 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_end with no data
+2025-02-20 10:41:47,282 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_end with no data
+2025-02-20 10:41:47,283 - src.api.routes.scraperRoutes - WARNING - scraperRoutes.py:37 - Invalid URL format in /upload-csv: URL
+2025-02-20 10:41:47,284 - src.api.routes.scraperRoutes - ERROR - scraperRoutes.py:42 - Error parsing CSV file: 400: Invalid URL format: URL
+2025-02-20 10:42:59,611 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_begin with no data
+2025-02-20 10:42:59,612 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[42:61]
+2025-02-20 10:42:59,612 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[63:106]
+2025-02-20 10:42:59,612 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:42:59,613 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_field with data[108:120]
+2025-02-20 10:42:59,613 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_header_value with data[122:130]
+2025-02-20 10:42:59,613 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_header_end with no data
+2025-02-20 10:42:59,613 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_headers_finished with no data
+2025-02-20 10:42:59,613 - python_multipart.multipart - DEBUG - multipart.py:625 - Calling on_part_data with data[134:885]
+2025-02-20 10:42:59,613 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_part_end with no data
+2025-02-20 10:42:59,613 - python_multipart.multipart - DEBUG - multipart.py:628 - Calling on_end with no data
+2025-02-20 10:42:59,615 - src.api.routes.scraperRoutes - WARNING - scraperRoutes.py:37 - Invalid URL format in /upload-csv: URL
+2025-02-20 10:42:59,615 - src.api.routes.scraperRoutes - ERROR - scraperRoutes.py:42 - Error parsing CSV file: 400: Invalid URL format: URL
+2025-02-20 10:44:02,813 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'SafeConfigParser': <class 'configparser.ConfigParser'>
+2025-02-20 10:44:02,813 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'NativeStringIO': <class '_io.StringIO'>
+2025-02-20 10:44:02,813 - passlib.utils.compat - DEBUG - __init__.py:449 - loaded lazy attr 'BytesIO': <class '_io.BytesIO'>
+2025-02-20 10:44:02,851 - passlib.registry - DEBUG - registry.py:296 - registered 'bcrypt' handler: <class 'passlib.handlers.bcrypt.bcrypt'>

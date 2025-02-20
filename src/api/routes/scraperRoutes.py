@@ -12,15 +12,14 @@ setup_logging()
 log = logging.getLogger(__name__)
 
 scraperRouter = APIRouter()
-    
+
 @scraperRouter.post("/upload-csv/")
-async def upload_csv(file : UploadFile = File(...), payload = Depends(validate_token)):
-    
+async def upload_csv(file: UploadFile = File(...), payload=Depends(validate_token)):
     emailId = payload.get("email")
 
     if not file.filename.endswith(".csv"):
         log.warning(f"Invalid File Name in /upload-csv")
-        return HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "File must be a CSV file")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="File must be a CSV file")
     
     content = await file.read()
     file.file.seek(0)
@@ -29,37 +28,31 @@ async def upload_csv(file : UploadFile = File(...), payload = Depends(validate_t
         csv_data = io.StringIO(content.decode("utf-8"))
         reader = csv.reader(csv_data)
         urlList = []
+        next(reader)
+        
         for row in reader:
-            if len(row) != 1:
-                log.warning(f"Invalid CSV format in /upload-csv: More than one column found")
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CSV file must contain only one column")
             url = row[0].strip()
-            if not (url.startswith("http://") or url.startswith("https://")):
-                log.warning(f"Invalid URL format in /upload-csv: {url}")
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid URL format: {url}")
             urlList.append(url)
+
     except Exception as e:
         log.error(f"Error parsing CSV file: {str(e)}")
-        return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid CSV format")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid CSV format")
 
     task = celeryApp.send_task('scrapper-service.core.celerySetup.scrapMetaData', args=[urlList, emailId])
 
     return {"task_id": task.id}
 
-
 @scraperRouter.get("/check-status/{task_id}")
-async def checkStatus(task_id : str, service: ScrapedDataService = Depends(ScrapedDataService), tokenData = Depends(validate_token)):
-
+async def checkStatus(task_id: str, service: ScrapedDataService = Depends(ScrapedDataService), tokenData=Depends(validate_token)):
     if not task_id or not task_id.strip():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST ,detail="Invalid Task Id")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid Task Id")
     task = celeryApp.AsyncResult(task_id)
     if not task:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND ,detail="Task not found")
-    return {"status" : task.state}
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
+    return {"status": task.state}
 
 @scraperRouter.get("/download-scraped-data/{task_id}")
-async def download_scraped_data(task_id : str, service: ScrapedDataService = Depends(ScrapedDataService), payload = Depends(validate_token)):
-
+async def download_scraped_data(task_id: str, service: ScrapedDataService = Depends(ScrapedDataService), payload=Depends(validate_token)):
     emailId = payload.get("email")
 
     file_path = None
@@ -67,7 +60,7 @@ async def download_scraped_data(task_id : str, service: ScrapedDataService = Dep
         file_path = service.fetchAndSaveData(emailId, task_id)
 
         if not os.path.exists(file_path):
-            log.error(f"File not found in /download'scraped-data")
+            log.error(f"File not found in /download-scraped-data")
             raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="File not found")
         response = FileResponse(
             path=file_path,
@@ -84,6 +77,5 @@ async def download_scraped_data(task_id : str, service: ScrapedDataService = Dep
     except Exception as e:
         if file_path and os.path.exists(file_path):
             os.remove(file_path)
-        log.error(f"Unexpected Error in /download'scraped-data : {e}")   
+        log.error(f"Unexpected Error in /download-scraped-data: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-
