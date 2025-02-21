@@ -27,10 +27,13 @@ async def register(user : UserSchema, service : UserService = Depends(UserServic
     
         return {"result": result}
     except ValueError as e:
-        log.error(f"ValueError in /register : {e}")
+        log.error(f"ValueError at controller level  in /register : {e}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except HTTPException as htre:
+        log.error(f"HttpExceptionError at controller level in /register: {htre.detail}")
+        raise htre
     except Exception as e:
-        log.error(f"Unexpected error in /register: {e}")
+        log.error(f"Error at controller level in /register: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred")
     
 security = HTTPBearer(auto_error=False)
@@ -52,7 +55,7 @@ async def login(
             pass
         else:
             payload = validate_token(credentials)
-            log.warning(f"User {payload['email']} already logged in")
+            log.warning(f"Error at controller level : User {payload['email']} already logged in")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"User {payload['email']} already logged in",
@@ -60,7 +63,7 @@ async def login(
 
         authenticatedUser: dict = service.authenticate(user)
         if not authenticatedUser:
-            log.warning(f"Authentication failed for user: {user.email}")
+            log.warning(f"Error at controller level : Authentication failed for user: {user.email}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect email or password",
@@ -70,11 +73,11 @@ async def login(
         return {"access_token": access_token, "token_type": "bearer"}
 
     except HTTPException as hte:
-        log.error(f"HTTP Exception: {hte.detail}")
+        log.error(f"HTTPExceptionError at controller level : {hte.detail}")
         raise hte
 
     except Exception as e:
-        log.error(f"Unexpected Error in /login: {str(e)}")
+        log.error(f"Unexpected Error at controller level in /login: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred",

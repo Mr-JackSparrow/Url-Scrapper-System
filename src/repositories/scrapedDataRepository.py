@@ -3,6 +3,7 @@ import logging
 from sqlalchemy.orm import Session
 from fastapi import Depends
 from sqlalchemy import select
+from fastapi.exceptions import HTTPException
 from src.models.scrapedDataModel import ScrapedData
 from src.models.userModel import User
 from src.dependencies import getDb
@@ -25,9 +26,12 @@ class ScrapedDataRepository:
 
             log.info(f"Successfully created scraped data record for URL: {data.url}")
 
+        except HTTPException as hte:
+            log.error(f"HTTPException Error at repository level : creating scraped data record for URL: {data.url}. Error: {str(hte)}")
+            raise hte
         except Exception as e:
             self.db.rollback()
-            log.error(f"Error creating scraped data record for URL: {data.url}. Error: {e}")
+            log.error(f"Error at repository level creating scraped data record for URL: {data.url}. Error: {e}")
             raise e
 
     def create_scraped_data_batch(self, data_list: list[ScrapedData]):
@@ -38,7 +42,7 @@ class ScrapedDataRepository:
             log.info(f"Successfully created {len(data_list)} scraped data records in batch")
         except Exception as e:
             self.db.rollback()
-            log.error(f"Error creating batch scraped data records. Error: {e}")
+            log.error(f"Error at repository level : creating batch scraped data records. Error: {e}")
             raise e
     
     def get_all_scraped_data(self, emailId, temp_token):
@@ -57,5 +61,5 @@ class ScrapedDataRepository:
         
         except Exception as e:
             self.db.rollback()
-            log.error(f"Error fetching scraped data for email: {emailId}. Error: {e}")
+            log.error(f"Error at repository level : fetching scraped data for email: {emailId}. Error: {e}")
             raise e

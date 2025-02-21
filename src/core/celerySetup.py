@@ -67,7 +67,7 @@ async def _scrapMetaData(urlList: list, emailId: str, temp_token: str):
             repo.create_scraped_data_batch(batch_data)
             db.commit()
         except SQLAlchemyError as e:
-            log.error(f"Database Error: {str(e)}")
+            log.error(f"Error from celery setup : {str(e)}")
             db.rollback()
         finally:
             db.close()
@@ -97,23 +97,23 @@ async def _fetch_metadata(session, url, userId, temp_token):
             }
 
     except asyncio.TimeoutError:
-        log.warning(f"Timeout: {url}")
+        log.warning(f"Warning from celery setup : Timeout: {url}")
         return _error_response(userId, temp_token, url, "Timeout occurred")
 
     except TooManyRedirects:
-        log.warning(f"Too many redirects: {url}")
+        log.warning(f"Warning from celery setup : Too many redirects: {url}")
         return _error_response(userId, temp_token, url, "Too many redirects")
 
     except SSLError:
-        log.warning(f"SSL error: {url}")
+        log.warning(f"Warning from celery setup : SSL error: {url}")
         return _error_response(userId, temp_token, url, "SSL Error")
 
     except ConnectionError:
-        log.warning(f"Connection error: {url}")
+        log.warning(f"Warning from celery setup : Connection error: {url}")
         return _error_response(userId, temp_token, url, "Connection Error")
 
     except Exception as e:
-        log.error(f"Unexpected error for {url}: {str(e)}")
+        log.error(f"Warning from celery setup : Unexpected error for {url}: {str(e)}")
         return _error_response(userId, temp_token, url, f"Unexpected error: {str(e)}")
 
 def _error_response(userId, temp_token, url, error_message):

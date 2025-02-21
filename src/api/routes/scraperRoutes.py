@@ -18,7 +18,7 @@ async def upload_csv(file: UploadFile = File(...), payload=Depends(validate_toke
     emailId = payload.get("email")
 
     if not file.filename.endswith(".csv"):
-        log.warning(f"Invalid File Name in /upload-csv")
+        log.warning(f"Error at controller level : Invalid File Name in /upload-csv")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="File must be a CSV file")
     
     content = await file.read()
@@ -33,9 +33,12 @@ async def upload_csv(file: UploadFile = File(...), payload=Depends(validate_toke
         for row in reader:
             url = row[0].strip()
             urlList.append(url)
-
+    
+    except HTTPException as hte:
+        log.error(f"Error at controller level : Error parsing CSV file: {str(hte)}")
+        raise hte
     except Exception as e:
-        log.error(f"Error parsing CSV file: {str(e)}")
+        log.error(f"Error at controller level : Error parsing CSV file: {str(e)}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid CSV format")
 
     task = celeryApp.send_task('scrapper-service.core.celerySetup.scrapMetaData', args=[urlList, emailId])
@@ -44,12 +47,20 @@ async def upload_csv(file: UploadFile = File(...), payload=Depends(validate_toke
 
 @scraperRouter.get("/check-status/{task_id}")
 async def checkStatus(task_id: str, service: ScrapedDataService = Depends(ScrapedDataService), tokenData=Depends(validate_token)):
-    if not task_id or not task_id.strip():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid Task Id")
-    task = celeryApp.AsyncResult(task_id)
-    if not task:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
-    return {"status": task.state}
+    try: 
+        if not task_id or not task_id.strip():
+            log.error(f"Error at controller level : Invalid Task Id in /check-status")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid Task Id")
+        task = celeryApp.AsyncResult(task_id)
+        if not task:
+            log.error(f"Error at controller level : Task not found in /check-status")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
+        return {"status": task.state}
+    except HTTPException as hte:
+        raise hte
+    except Exception as e:
+        log.error(f"Error at controller level : {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @scraperRouter.get("/download-scraped-data/{task_id}")
 async def download_scraped_data(task_id: str, service: ScrapedDataService = Depends(ScrapedDataService), payload=Depends(validate_token)):
@@ -60,7 +71,7 @@ async def download_scraped_data(task_id: str, service: ScrapedDataService = Depe
         file_path = service.fetchAndSaveData(emailId, task_id)
 
         if not os.path.exists(file_path):
-            log.error(f"File not found in /download-scraped-data")
+            log.error(f"Error at controller level : File not found in /download-scraped-data")
             raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="File not found")
         response = FileResponse(
             path=file_path,
@@ -74,6 +85,8 @@ async def download_scraped_data(task_id: str, service: ScrapedDataService = Depe
         response.background = delete_file_after_response
 
         return response
+    except HTTPException as hte:
+        raise hte
     except Exception as e:
         if file_path and os.path.exists(file_path):
             os.remove(file_path)

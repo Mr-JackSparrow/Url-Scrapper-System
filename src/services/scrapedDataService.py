@@ -2,7 +2,7 @@ from src.logging_config import setup_logging
 import logging
 from src.repositories.scrapedDataRepository import ScrapedDataRepository
 from sqlalchemy.orm import Session
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, status
 from src.dependencies import getDb
 import os
 
@@ -19,7 +19,8 @@ class ScrapedDataService:
         try:
             scrapedData = self.scrapedDataRepository.get_all_scraped_data(emailId, temp_token)
             if not scrapedData:
-                raise HTTPException(status_code=404, detail="No data found for the given Task ID")
+                log.error("Error at service level in fetchAndSaveData: No data found for the given Task ID")
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No data found for the given Task ID")
 
             file_dir = "files"  
             os.makedirs(file_dir, exist_ok=True)  
@@ -43,5 +44,5 @@ class ScrapedDataService:
         except HTTPException as http_err:
             raise http_err
         except Exception as e:
-            log.error(f"Error in fetchAndSaveData: {e}")
+            log.error(f"Error at service level in fetchAndSaveData: {e}")
             raise HTTPException(status_code=500, detail="An error occurred while fetching and saving data")

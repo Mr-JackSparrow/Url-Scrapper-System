@@ -19,10 +19,10 @@ class UserRepository:
             result = self.db.execute(select(User.email))
             return {row[0] for row in result.fetchall()}
         except SQLAlchemyError as e:
-            log.error(f"Database error in getAllEmails: {e}", exc_info=True)
+            log.error(f"Database error at repository level in getAllEmails: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail="Database error while fetching emails")
         except Exception as e:
-            log.error(f"Unexpected error in getAllEmails: {e}", exc_info=True)
+            log.error(f"Unexpected error at repository level in getAllEmails: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail="Unexpected error while fetching emails")
 
     def createUser(self, user: User):
@@ -35,11 +35,11 @@ class UserRepository:
             return user.id
         except SQLAlchemyError as e:
             self.db.rollback()
-            log.error(f"Database error in createUser: {e}", exc_info=True)
+            log.error(f"Database error at repository level in createUser: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail="Database error while creating user")
         except Exception as e:
             self.db.rollback()
-            log.error(f"Unexpected error in createUser: {e}", exc_info=True)
+            log.error(f"Unexpected error at repository level in createUser: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail="Unexpected error while creating user")
 
         
@@ -48,14 +48,14 @@ class UserRepository:
             result = self.db.execute(select(User).where(User.email == email))
             user = result.scalars().first()
             if not user:
-                log.warning(f"No user found with email: {email}")
+                log.warning(f"Warning at repository level No user found with email: {email}")
                 raise HTTPException(status_code=404, detail="User not found")
             return user
         except SQLAlchemyError as e:
-            log.error(f"Database error in getUserByEmailId: {e}", exc_info=True)
+            log.error(f"Database error at repository level in getUserByEmailId: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail="Database error while fetching user")
         except Exception as e:
-            log.error(f"Unexpected error in getUserByEmailId: {e}", exc_info=True)
+            log.error(f"Unexpected error at repository level in getUserByEmailId: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail="Unexpected error while fetching user")
         
     def getUserIdByEmailId(self, email : str):
@@ -63,12 +63,12 @@ class UserRepository:
             result = self.db.execute(select(User.id).where(User.email == email))
             user_id = result.scalars().first()
             if not user_id:
-                log.warning(f"No user found with email: {email}")
+                log.warning(f"Warning at repository level No user found with email: {email}")
                 raise HTTPException(status_code=404, detail="User not found")
             return user_id
         except SQLAlchemyError as e:
-            log.error(f"Database error in getUserIdByEmailId: {e}", exc_info=True)
+            log.error(f"Database error at repository level in getUserIdByEmailId: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail="Database error while fetching user ID")
         except Exception as e:
-            log.error(f"Unexpected error in getUserIdByEmailId: {e}", exc_info=True)
+            log.error(f"Unexpected error at repository level in getUserIdByEmailId: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail="Unexpected error while fetching user ID")
