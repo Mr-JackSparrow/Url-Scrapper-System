@@ -4,4 +4,9 @@ global:
 scrape_configs:
   - job_name: 'assignment-project'
     static_configs:
-      - targets: ['host.docker.inter:8000', 'assignment-pcho.onrender.com:8000']
+      - targets: ['host.docker.inter:8000']
+  
+  - job_name: 'assignment-project-render'
+    scheme: https
+    static_configs:
+      - targets: ['assignment-pcho.onrender.com']
