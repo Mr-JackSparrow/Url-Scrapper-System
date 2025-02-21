@@ -18,29 +18,59 @@ async def upload_csv(file: UploadFile = File(...), payload=Depends(validate_toke
     emailId = payload.get("email")
 
     if not file.filename.endswith(".csv"):
-        log.warning(f"Error at controller level : Invalid File Name in /upload-csv")
+        log.warning(f"Error at controller level: Invalid File Name in /upload-csv")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="File must be a CSV file")
-    
+
     content = await file.read()
+    if not content:
+        log.warning(f"Error at controller level: Empty file uploaded in /upload-csv")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="File cannot be empty")
+
     file.file.seek(0)
 
     try:
         csv_data = io.StringIO(content.decode("utf-8"))
         reader = csv.reader(csv_data)
+
+        try:
+            header = next(reader)
+        except StopIteration:
+            log.warning(f"Error at controller level: Empty CSV file in /upload-csv")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="CSV file is empty")
+
+        if len(header) != 1 or header[0].strip().lower() != "url":
+            log.warning(f"Error at controller level: Invalid CSV header in /upload-csv")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="CSV file must contain only one column named 'url' (case-insensitive)"
+            )
+
         urlList = []
-        next(reader)
-        
         for row in reader:
+            if len(row) != 1:
+                log.warning(f"Error at controller level: Invalid row format in /upload-csv")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Each row in the CSV file must contain only one column"
+                )
             url = row[0].strip()
-            urlList.append(url)
-    
+            if url:
+                urlList.append(url)
+
+        if not urlList:
+            log.warning(f"Error at controller level: No valid URLs found in /upload-csv")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="CSV file must contain at least one valid URL"
+            )
+
     except HTTPException as hte:
-        log.error(f"Error at controller level : Error parsing CSV file: {str(hte)}")
+        log.error(f"Error at controller level: Error parsing CSV file: {str(hte)}")
         raise hte
     except Exception as e:
-        log.error(f"Error at controller level : Error parsing CSV file: {str(e)}")
+        log.error(f"Error at controller level: Error parsing CSV file: {str(e)}")
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid CSV format")
-
+    
     task = celeryApp.send_task('scrapper-service.core.celerySetup.scrapMetaData', args=[urlList, emailId])
 
     return {"task_id": task.id}

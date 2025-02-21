@@ -31,6 +31,7 @@ class ScrapedDataService:
                     file.write(f"Id: {data.id}\n")
                     file.write(f"User-Id: {data.user_id}\n")
                     file.write(f"User-Email-Id : {emailId}\n")
+                    file.write(f"Temp-Token: {data.temp_token}\n")
                     file.write(f"URL: {data.url}\n")
                     file.write(f"Title: {data.title}\n")
                     file.write(f"Description: {data.description}\n")
