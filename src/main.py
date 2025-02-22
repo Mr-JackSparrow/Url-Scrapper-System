@@ -28,7 +28,9 @@ DEV_REQUEST_LATENCY = Histogram('dev_request_latency_seconds', 'Request latency 
 async def add_custom_metrics(request: Request, call_next):
     method = request.method
     endpoint = request.url.path
+
     if endpoint.startswith("/auth"):
+        
         AUTH_REQUEST_COUNT.labels(method=method, endpoint=endpoint).inc()
         start_time = time.time()
         response = await call_next(request)
@@ -36,6 +38,7 @@ async def add_custom_metrics(request: Request, call_next):
         AUTH_REQUEST_LATENCY.labels(method=method, endpoint=endpoint).observe(latency)
         return response
     elif endpoint.startswith("/scraper"):
+
         SCRAPER_REQUEST_COUNT.labels(method=method, endpoint=endpoint).inc()
         start_time = time.time()
         response = await call_next(request)
@@ -43,6 +46,7 @@ async def add_custom_metrics(request: Request, call_next):
         SCRAPER_REQUEST_LATENCY.labels(method=method, endpoint=endpoint).observe(latency)
         return response
     elif endpoint.startswith("/dev"):
+
         DEV_REQUEST_COUNT.labels(method=method, endpoint=endpoint).inc()
         start_time = time.time()
         response = await call_next(request)
