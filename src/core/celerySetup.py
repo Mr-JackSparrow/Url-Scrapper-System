@@ -36,7 +36,7 @@ celeryApp.conf.update(
     enable_utc=True,
     task_acks_late=True,  
     broker_connection_retry_on_startup=True, 
-    worker_concurrency=20
+    worker_concurrency=15
 )
 
 
