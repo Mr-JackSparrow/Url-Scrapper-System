@@ -36,7 +36,7 @@ celeryApp.conf.update(
     enable_utc=True,
     task_acks_late=True,  
     broker_connection_retry_on_startup=True, 
-    worker_concurrency=5
+    worker_concurrency=20
 )
 
 
@@ -76,7 +76,7 @@ async def _scrapMetaData(urlList: list, emailId: str, temp_token: str):
 
 async def _fetch_metadata(session, url, userId, temp_token):
     try:
-        async with session.get(url, timeout=5) as response:
+        async with session.get(url, timeout=20) as response:
             html = await response.text()
             soup = BeautifulSoup(html, 'html.parser')
 
