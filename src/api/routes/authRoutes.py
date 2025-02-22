@@ -55,11 +55,13 @@ async def login(
             pass
         else:
             payload = validate_token(credentials)
-            log.warning(f"Error at controller level : User {payload['email']} already logged in")
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"User {payload['email']} already logged in",
-            )
+
+            if user.email == payload["email"]:
+                log.warning(f"Error at controller level : User {payload['email']} already logged in")
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"User {payload['email']} already logged in",
+                )
 
         authenticatedUser: dict = service.authenticate(user)
         if not authenticatedUser:
