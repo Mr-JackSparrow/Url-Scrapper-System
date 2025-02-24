@@ -98,7 +98,12 @@ async def download_scraped_data(task_id: str, service: ScrapedDataService = Depe
 
     file_path = None
     try:
-        file_path = service.fetchAndSaveData(emailId, task_id)
+        task = celeryApp.AsyncResult(task_id)
+        if task.state == "SUCCESS":
+            file_path = service.fetchAndSaveData(emailId, task_id)
+        else:
+            log.error(f"Error at controller level : Task not completed in /download-scraped-data")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not completed")
 
         if not os.path.exists(file_path):
             log.error(f"Error at controller level : File not found in /download-scraped-data")
